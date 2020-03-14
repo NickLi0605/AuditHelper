@@ -1,0 +1,29 @@
+dist: xenial
+language: android
+jdk: oraclejdk8
+
+git:
+  depth: false
+  quiet: true
+
+env:
+ global:
+  - ANDROID_API=29
+  - ANDROID_BUILD_TOOLS=29.0.0
+  - ADB_INSTALL_TIMEOUT=5
+
+android:
+  components:
+    - platform-tools
+    - tools
+    - build-tools-29.0.2
+    - android-29
+    - sys-img-arm64-v8a-google_apis-25
+
+before_install:
+    - yes | sdkmanager "platforms;android-29"
+
+script:
+  - cd android
+  - ./gradlew clean test
+  - git diff --quiet
