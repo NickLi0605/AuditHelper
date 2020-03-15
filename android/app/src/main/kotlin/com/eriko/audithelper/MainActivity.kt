@@ -1,37 +1,39 @@
 package com.eriko.audithelper
 
+import android.Manifest.permission
 import android.os.Bundle
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
+import android.view.View
+import androidx.appcompat.app.AppCompatActivity
+import com.karumi.dexter.Dexter
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionDeniedResponse
 import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.single.PermissionListener
-import android.Manifest.permission
-import com.karumi.dexter.Dexter
 import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.single.PermissionListener
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-    private var mCameraPermissionGranted = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
 
-        // Request camera permission
-        requestPermission()
-
-        capture_btn.setOnClickListener {
-            when (mCameraPermissionGranted) {
-                true -> Log.i(TAG, "Camera permission is granted")
-                else -> requestPermission()
-            }
+        start_btn.setOnClickListener {
+            Dexter.withActivity(this)
+                    .withPermission(permission.CAMERA)
+                    .withListener(object : PermissionListener {
+                        override fun onPermissionGranted(response: PermissionGrantedResponse) {
+                            start_btn.visibility = View.GONE
+                            supportFragmentManager.beginTransaction().replace(R.id.content_main, CameraFragment.newInstance()).commit()
+                        }
+                        override fun onPermissionDenied(response: PermissionDeniedResponse) {}
+                        override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest, token: PermissionToken) {
+                            token.continuePermissionRequest()
+                        }
+                    }).check()
         }
     }
 
@@ -49,21 +51,5 @@ class MainActivity : AppCompatActivity() {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    private fun requestPermission() {
-        Dexter.withActivity(this)
-                .withPermission(permission.CAMERA)
-                .withListener(object : PermissionListener {
-                    override fun onPermissionGranted(response: PermissionGrantedResponse) {
-                        mCameraPermissionGranted = true
-                    }
-                    override fun onPermissionDenied(response: PermissionDeniedResponse) {
-                        mCameraPermissionGranted = false
-                    }
-                    override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest, token: PermissionToken) {
-                        token.continuePermissionRequest()
-                    }
-                }).check()
     }
 }

@@ -1,3 +1,4 @@
 <resources>
   <dimen name="capture_btn_margin">16dp</dimen>
+  <dimen name="start_btn_margin">16dp</dimen>
 </resources>
