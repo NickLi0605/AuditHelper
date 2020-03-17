@@ -24,6 +24,7 @@ class CameraFragment : Fragment() {
     private lateinit var cameraCore: CameraCore
     private lateinit var previewTexture: TextureView
     private val co: CompositeDisposable = CompositeDisposable()
+    private var running = false
     private val surfaceListener = object : TextureView.SurfaceTextureListener {
         override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
             preview()
@@ -43,26 +44,25 @@ class CameraFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        previewTexture = preview_texture
-        stop_btn.setOnClickListener {
-            cameraCore.close()
-        }
         cameraCore = CameraCore()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        context?.let {
-            when (checkSelfPermission(it, CAMERA)) {
-                PERMISSION_GRANTED -> preview()
-                else -> Log.e(TAG, "Camera permission is not granted")
+        previewTexture = preview_texture
+        start_preview_btn.setOnClickListener {
+            if (running) {
+                cameraCore.close()
+                start_preview_btn.setImageResource(android.R.drawable.presence_video_busy)
+            } else {
+                context?.let {
+                    when (checkSelfPermission(it, CAMERA)) {
+                        PERMISSION_GRANTED -> {
+                            preview()
+                            start_preview_btn.setImageResource(R.drawable.ic_stop)
+                        }
+                        else -> Log.e(TAG, "Camera permission is not granted")
+                    }
+                }
             }
+            running = !running
         }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        cameraCore.close()
     }
 
     override fun onDestroy() {

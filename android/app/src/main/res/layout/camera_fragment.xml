@@ -29,11 +29,13 @@
     app:useCompatPadding="true" />
 
   <com.google.android.material.floatingactionbutton.FloatingActionButton
-    android:id="@+id/stop_btn" android:layout_width="wrap_content"
+    android:id="@+id/start_preview_btn"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="40dp" android:layout_marginBottom="16dp"
     app:backgroundTint="#C5BFBF"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintStart_toEndOf="@+id/capture_btn"
-    app:srcCompat="@drawable/ic_stop" app:useCompatPadding="true" />
+    app:srcCompat="@android:drawable/presence_video_busy"
+    app:useCompatPadding="true" />
 </androidx.constraintlayout.widget.ConstraintLayout>
