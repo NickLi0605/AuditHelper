@@ -9,6 +9,9 @@ import android.hardware.camera2.CameraDevice
 
 import android.hardware.camera2.CameraMetadata
 import android.hardware.camera2.CaptureRequest
+import android.os.Handler
+import android.os.HandlerThread
+import android.util.Log
 import android.util.Size
 import android.view.Surface
 import io.reactivex.Observable
@@ -20,6 +23,8 @@ class CameraCore {
     var captureSession: CameraCaptureSession? = null
     var previewSize: Size = Size(0, 0)
 
+    private var backgroundThread: HandlerThread? = null
+    private var backgroundHandler: Handler? = null
     private var requestBuilder: CaptureRequest.Builder? = null
     private var sensorOrientation: Int = 0
     private val lock = Semaphore(1)
@@ -48,6 +53,7 @@ class CameraCore {
                 it.onComplete()
                 lock.release()
             } else {
+                startBackgroundThread()
                 requestBuilder = cameraDevice?.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
                 requestBuilder?.addTarget(surface[0])
                 cameraDevice?.createCaptureSession(surface, object : CameraCaptureSession.StateCallback() {
@@ -76,6 +82,7 @@ class CameraCore {
             captureSession = null
             cameraDevice?.close()
             cameraDevice = null
+            stopBackgroundThread()
         } catch (e: InterruptedException) {
             throw RuntimeException("Interrupted while trying to lock camera closing.", e)
         } finally {
@@ -106,14 +113,14 @@ class CameraCore {
                         it.onComplete()
                     }
                 },
-                null
+                backgroundHandler
             )
         }
     }
 
     private fun previewNow() {
         requestBuilder?.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO)
-        requestBuilder?.build()?.let { captureSession?.setRepeatingRequest(it, null, null) }
+        requestBuilder?.build()?.let { captureSession?.setRepeatingRequest(it, null, backgroundHandler) }
     }
 
     private fun chooseSizeFitWithScreen(choices: Array<Size>): Size {
@@ -134,5 +141,21 @@ class CameraCore {
         }
 
         return choices[choices.size - 1]
+    }
+
+    private fun startBackgroundThread() {
+        backgroundThread = HandlerThread(TAG).also { it.start() }
+        backgroundHandler = Handler(backgroundThread!!.looper)
+    }
+
+    private fun stopBackgroundThread() {
+        backgroundThread?.quitSafely()
+        try {
+            backgroundThread?.join()
+            backgroundThread = null
+            backgroundHandler = null
+        } catch (e: InterruptedException) {
+            Log.e(TAG, e.toString())
+        }
     }
 }
