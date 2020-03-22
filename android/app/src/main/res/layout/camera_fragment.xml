@@ -8,14 +8,13 @@
   app:layout_behavior="@string/appbar_scrolling_view_behavior"
   tools:context=".MainActivity">
 
-  <TextureView android:id="@+id/preview_texture"
+  <com.otaliastudios.cameraview.CameraView
+    android:id="@+id/camera" android:keepScreenOn="true"
     android:layout_width="0dp" android:layout_height="0dp"
-    android:layout_marginBottom="30dp"
     app:layout_constraintBottom_toTopOf="@+id/capture_btn"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:srcCompat="@color/design_default_color_primary_dark" />
+    app:layout_constraintTop_toTopOf="parent" />
 
   <com.google.android.material.floatingactionbutton.FloatingActionButton
     android:id="@+id/capture_btn" android:layout_width="wrap_content"

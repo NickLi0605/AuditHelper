@@ -1,17 +1,10 @@
 package com.eriko.audithelper
 
-import android.Manifest.permission
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionDeniedResponse
-import com.karumi.dexter.listener.PermissionGrantedResponse
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.single.PermissionListener
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -20,33 +13,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
         start_btn.setOnClickListener {
-            Dexter.withActivity(this)
-                    .withPermission(permission.CAMERA)
-                    .withListener(object : PermissionListener {
-                        override fun onPermissionGranted(response: PermissionGrantedResponse) {
-                            start_btn.visibility = View.GONE
-                            supportFragmentManager.beginTransaction().replace(R.id.content_main, CameraFragment.newInstance()).commit()
-                        }
-                        override fun onPermissionDenied(response: PermissionDeniedResponse) {}
-                        override fun onPermissionRationaleShouldBeShown(permission: PermissionRequest, token: PermissionToken) {
-                            token.continuePermissionRequest()
-                        }
-                    }).check()
+            start_btn.visibility = View.GONE
+            supportFragmentManager.beginTransaction().replace(R.id.content_main, CameraFragment.newInstance()).commit()
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         return when (item.itemId) {
             R.id.action_settings -> true
             else -> super.onOptionsItemSelected(item)

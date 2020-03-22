@@ -5,12 +5,13 @@
   package="com.eriko.audithelper">
   <uses-permission
     android:name="android.permission.CAMERA" />
+  <uses-permission
+    android:name="android.permission.RECORD_AUDIO" />
 
   <dist:module dist:instant="true" />
 
-  <application android:name=".RootApplication"
-    android:allowBackup="false" android:icon="@mipmap/ic_launcher"
-    android:label="@string/app_name"
+  <application android:allowBackup="false"
+    android:icon="@mipmap/ic_launcher" android:label="@string/app_name"
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true" android:theme="@style/AppTheme">
     <activity android:name=".MainActivity"
