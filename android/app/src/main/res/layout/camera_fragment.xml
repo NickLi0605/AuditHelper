@@ -9,12 +9,18 @@
   tools:context=".MainActivity">
 
   <com.otaliastudios.cameraview.CameraView
-    android:id="@+id/camera" android:keepScreenOn="true"
-    android:layout_width="0dp" android:layout_height="0dp"
-    app:layout_constraintBottom_toTopOf="@+id/capture_btn"
+    android:id="@+id/camera" android:layout_width="0dp"
+    android:layout_height="0dp" android:keepScreenOn="true"
+    app:layout_constraintBottom_toTopOf="@id/capture_view"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
+
+  <ImageView android:id="@+id/capture_view"
+    android:layout_width="0dp" android:layout_height="300dp"
+    app:layout_constraintBottom_toTopOf="@id/capture_btn"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent" />
 
   <com.google.android.material.floatingactionbutton.FloatingActionButton
     android:id="@+id/capture_btn" android:layout_width="wrap_content"
@@ -27,14 +33,4 @@
     app:srcCompat="@drawable/ic_image_capture"
     app:useCompatPadding="true" />
 
-  <com.google.android.material.floatingactionbutton.FloatingActionButton
-    android:id="@+id/start_preview_btn"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="40dp" android:layout_marginBottom="16dp"
-    app:backgroundTint="#C5BFBF"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintStart_toEndOf="@+id/capture_btn"
-    app:srcCompat="@android:drawable/presence_video_busy"
-    app:useCompatPadding="true" />
 </androidx.constraintlayout.widget.ConstraintLayout>

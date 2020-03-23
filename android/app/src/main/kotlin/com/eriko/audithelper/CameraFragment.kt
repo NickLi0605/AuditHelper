@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.otaliastudios.cameraview.CameraListener
+import com.otaliastudios.cameraview.PictureResult
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.camera_fragment.*
 
@@ -18,11 +20,9 @@ class CameraFragment : Fragment(), View.OnClickListener {
 
     override fun onClick(view: View?) {
         when (view?.id) {
-            R.id.start_preview_btn -> {
+            R.id.capture_btn -> {
                 if (camera.isOpened) {
-                    camera.close()
-                } else {
-                    camera.open()
+                    camera.takePicture()
                 }
             }
             else -> Log.e(TAG, "Unknown id")
@@ -37,19 +37,40 @@ class CameraFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        start_preview_btn.setOnClickListener(this)
+        capture_btn.setOnClickListener(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        openCamera()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        camera.close()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        if (camera.isOpened) {
-            camera.close()
-        }
         camera.destroy()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         co.dispose()
+    }
+
+    private fun openCamera() {
+        if (!camera.isOpened) {
+            camera.open()
+            camera.addCameraListener(object : CameraListener() {
+                override fun onPictureTaken(result: PictureResult) {
+                    super.onPictureTaken(result)
+                    result.toBitmap {
+                        capture_view.setImageBitmap(it)
+                    }
+                }
+            })
+        }
     }
 }
