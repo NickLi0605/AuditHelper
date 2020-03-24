@@ -14,12 +14,16 @@
     app:layout_constraintBottom_toTopOf="@id/capture_view"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    app:layout_constraintTop_toTopOf="parent"
+    app:cameraPictureSizeMinWidth="100"
+    app:cameraPictureSizeMinHeight="100"
+    app:cameraPictureSizeMaxWidth="500"
+    app:cameraPictureSizeMaxHeight="200" />
 
   <ImageView android:id="@+id/capture_view"
     android:layout_width="0dp" android:layout_height="300dp"
     app:layout_constraintBottom_toTopOf="@id/capture_btn"
-    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintEnd_toStartOf="@id/ocr_result"
     app:layout_constraintStart_toStartOf="parent" />
 
   <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -32,5 +36,11 @@
     app:layout_constraintStart_toStartOf="parent"
     app:srcCompat="@drawable/ic_image_capture"
     app:useCompatPadding="true" />
+
+  <TextView android:id="@+id/ocr_result"
+    android:layout_width="150dp" android:layout_height="0dp"
+    app:layout_constraintBottom_toTopOf="@id/capture_btn"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/camera" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

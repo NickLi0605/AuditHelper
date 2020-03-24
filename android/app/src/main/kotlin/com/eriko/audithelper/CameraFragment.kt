@@ -10,6 +10,7 @@ import com.otaliastudios.cameraview.CameraListener
 import com.otaliastudios.cameraview.PictureResult
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.camera_fragment.*
+import com.googlecode.tesseract.android.TessBaseAPI
 
 class CameraFragment : Fragment(), View.OnClickListener {
     companion object {
@@ -67,6 +68,12 @@ class CameraFragment : Fragment(), View.OnClickListener {
                 override fun onPictureTaken(result: PictureResult) {
                     super.onPictureTaken(result)
                     result.toBitmap {
+                        val baseApi = TessBaseAPI()
+                        baseApi.init("/sdcard/Download/tesseract/", "eng")
+                        baseApi.pageSegMode = TessBaseAPI.PageSegMode.PSM_SINGLE_LINE
+                        baseApi.setImage(it)
+                        val outputText = baseApi.utF8Text
+                        ocr_result.text = outputText
                         capture_view.setImageBitmap(it)
                     }
                 }
